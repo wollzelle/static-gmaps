@@ -36,7 +36,7 @@ Original Version from John Wulff, modified by Daniel Mattes, modified by Sebasti
 
 == INSTALL:
 
-* sudo gem install static-gmaps
+* sudo gem install static-gmaps-v3
 
 == LICENSE:
 
