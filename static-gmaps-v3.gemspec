@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.date = %q{2010-05-02}
   s.description = %q{Provides an interface to the Google Static Maps API v3.}
   s.email = %q{sebastian@validcode.me}
-  s.extra_rdoc_files = ["LICENSE.txt", "lib/static_gmaps.rb"]
-  s.files = ["History.txt", "LICENSE.txt", "Manifest.txt", "Rakefile", "lib/static_gmaps.rb", "nbproject/private/rake-d.txt", "readme.txt", "spec/static_gmaps_spec.rb", "static-gmaps.gemspec", "Manifest", "static-gmaps-v3.gemspec"]
+  s.extra_rdoc_files = ["LICENSE.txt", "README", "lib/static_gmaps.rb"]
+  s.files = ["History.txt", "LICENSE.txt", "Manifest", "README", "Rakefile", "lib/static_gmaps.rb", "spec/static_gmaps_spec.rb", "static-gmaps-v3.gemspec"]
   s.homepage = %q{}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Static-gmaps-v3", "--main", "README"]
   s.require_paths = ["lib"]

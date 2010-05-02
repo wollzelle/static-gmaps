@@ -1,10 +1,8 @@
 History.txt
 LICENSE.txt
-Manifest.txt
+Manifest
+README
 Rakefile
 lib/static_gmaps.rb
-nbproject/private/rake-d.txt
-readme.txt
 spec/static_gmaps_spec.rb
-static-gmaps.gemspec
-Manifest
+static-gmaps-v3.gemspec
