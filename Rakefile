@@ -33,7 +33,7 @@ rescue LoadError
   exit
 end
 
-Echoe.new('static-gmaps', StaticGmaps::version) do |p|
+Echoe.new('static-gmaps-v3', StaticGmaps::version) do |p|
   p.author = 'Sebastian Gräßl'
   p.email  = 'sebastian@validcode.me'
   p.summary = 'Provides an interface to the Google Static Maps API v3.'
