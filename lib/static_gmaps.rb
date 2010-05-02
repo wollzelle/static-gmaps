@@ -24,7 +24,7 @@
 require 'net/http'
 
 module StaticGmaps 
-  @@version = '0.0.4' 
+  @@version = '0.0.5'
   
   #map  
   @@maximum_url_size = 1978
@@ -33,7 +33,7 @@ module StaticGmaps
   @@default_zoom     = 1
   @@default_size     = [ 500, 400 ]
   @@default_map_type = :roadmap
-  @@default_key      = 'ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA'
+  @@default_sensor   = false
   
 
   
@@ -45,8 +45,8 @@ module StaticGmaps
   @@valid_colors            = [ :red, :green, :blue ]
   @@valid_alpha_characters  = [ :a, :b, :c, :d, :e, :f, :g, :h, :i, :j, :k, :l, :m, :n, :o, :p, :q, :r, :s, :t, :u, :v, :w, :x, :y, :z ]    
   
-  [:version, :maximum_url_size, :maximum_markers, :default_center, :default_zoom, :default_size, :default_map_type, :default_key,
-  :default_latitude, :default_longitude, :default_color, :default_alpha_character, :valid_colors, :valid_alpha_characters].each do |sym|
+  [:version, :maximum_url_size, :maximum_markers, :default_center, :default_zoom, :default_size, :default_map_type,
+  :default_latitude, :default_longitude, :default_color, :default_alpha_character, :valid_colors, :valid_alpha_characters, :default_sensor].each do |sym|
     class_eval <<-EOS
       def self.#{sym}
         @@#{sym}
@@ -65,15 +65,15 @@ module StaticGmaps
                   :zoom,
                   :size,
                   :map_type,
-                  :key,
-                  :markers
+                  :markers,
+                  :sensor
 
     def initialize(options = {})
       self.center   = options[:center]
       self.zoom     = options[:zoom]     || StaticGmaps::default_zoom
       self.size     = options[:size]     || StaticGmaps::default_size
       self.map_type = options[:map_type] || StaticGmaps::default_map_type
-      self.key      = options[:key]      || StaticGmaps::default_key
+      self.sensor   = options[:sensor]   || StaticGmaps::default_sensor
       self.markers  = options[:markers]  || [ ]
     end
 
@@ -88,7 +88,6 @@ module StaticGmaps
     # http://code.google.com/apis/maps/documentation/staticmaps/index.html#URL_Parameters
     def url
       raise MissingArgument.new("Size must be set before a url can be generated for Map.") if !size || !size[0] || !size[1]
-      raise MissingArgument.new("Key must be set before a url can be generated for Map.") if !key
       
       if(!self.center && !(markers && markers.size >= 1))
         self.center = StaticGmaps::default_center
@@ -101,15 +100,16 @@ module StaticGmaps
       raise "Google will not display more than #{StaticGmaps::maximum_markers} markers." if markers && markers.size > StaticGmaps::maximum_markers
       parameters = {}
       parameters[:size]     = "#{size[0]}x#{size[1]}"
-      parameters[:key]      = "#{key}"
       parameters[:map_type] = "#{map_type}"               if map_type
       parameters[:center]   = "#{center[0]},#{center[1]}" if center
       parameters[:zoom]     = "#{zoom}"                   if zoom
       parameters[:markers]  = "#{markers_url_fragment}"   if markers_url_fragment
+      parameters[:sensor]   = "#{sensor}"
+      
       parameters = parameters.to_a.sort { |a, b| a[0].to_s <=> b[0].to_s }
       parameters = parameters.collect { |parameter| "#{parameter[0]}=#{parameter[1]}" }
       parameters = parameters.join '&'
-      x = "http://maps.google.com/staticmap?#{parameters}"
+      x = "http://maps.google.com/maps/api/staticmap?#{parameters}"
       raise "Google doesn't like the url to be longer than #{StaticGmaps::maximum_url_size} characters.  Try fewer or less precise markers." if x.size > StaticGmaps::maximum_url_size
       return x
     end  
@@ -177,9 +177,10 @@ module StaticGmaps
     def url_fragment
       raise MissingArgument.new("Latitude must be set before a url_fragment can be generated for Marker.") if !latitude
       raise MissingArgument.new("Longitude must be set before a url_fragment can be generated for Marker.") if !longitude
-      x  = "#{latitude},#{longitude}"
-      x += ",#{color}" if color
-      x += "#{alpha_character}" if alpha_character
+      x  = ""
+      x += "color:#{color}|" if color
+      x += "label:#{alpha_character}|" if alpha_character
+      x += "#{latitude},#{longitude}"
       return x
     end
   end
