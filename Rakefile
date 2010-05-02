@@ -22,8 +22,9 @@
 # THE SOFTWARE.
 
 require 'rubygems'
-require 'hoe'
+require 'echoe'
 require './lib/static_gmaps.rb'
+
 begin
   require 'spec/rake/spectask'
 rescue LoadError
@@ -32,15 +33,10 @@ rescue LoadError
   exit
 end
 
-Hoe.new('static-gmaps', StaticGmaps::version) do |p|
-  p.rubyforge_name = 'static-gmaps'
-  p.author = 'Daniel Mattes'
-  p.email = 'daniel.mattes@gmx.de'
-  p.summary = 'Provides an interface to the Google Static Maps API.'
-  p.description = p.paragraphs_of('README.txt', 2..5).join("\n\n")
-  p.url = p.paragraphs_of('README.txt', 0).first.split(/\n/)[1..-1]
-  p.changes = p.paragraphs_of('History.txt', 0..1).join("\n\n")
-  p.remote_rdoc_dir = ''
+Echoe.new('static-gmaps', StaticGmaps::version) do |p|
+  p.author = 'Sebastian Gräßl'
+  p.email  = 'sebastian@validcode.me'
+  p.summary = 'Provides an interface to the Google Static Maps API v3.'
 end
 
 desc "Run all examples"
