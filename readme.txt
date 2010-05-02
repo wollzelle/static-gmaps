@@ -5,7 +5,9 @@
 == DESCRIPTION:
 
 Provides an interface to the Google Static Maps API.
+Copyright (c) 2010 Sebastian Gräßl <sebastian@validcode.me>
 Original Version from John Wulff, modified by Daniel Mattes
+
 
 == FEATURES/PROBLEMS:
 
