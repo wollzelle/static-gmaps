@@ -41,12 +41,12 @@ module StaticGmaps
   @@default_latitude        = nil
   @@default_longitude       = nil
   @@default_color           = nil
-  @@default_alpha_character = nil
+  @@default_label           = nil
   @@valid_colors            = [ :red, :green, :blue ]
   @@valid_alpha_characters  = [ :a, :b, :c, :d, :e, :f, :g, :h, :i, :j, :k, :l, :m, :n, :o, :p, :q, :r, :s, :t, :u, :v, :w, :x, :y, :z ]    
   
   [:version, :maximum_url_size, :maximum_markers, :default_center, :default_zoom, :default_size, :default_map_type,
-  :default_latitude, :default_longitude, :default_color, :default_alpha_character, :valid_colors, :valid_alpha_characters, :default_sensor].each do |sym|
+  :default_latitude, :default_longitude, :default_color, :default_label, :valid_colors, :valid_alpha_characters, :default_sensor].each do |sym|
     class_eval <<-EOS
       def self.#{sym}
         @@#{sym}
@@ -103,7 +103,7 @@ module StaticGmaps
       parameters[:map_type] = "#{map_type}"               if map_type
       parameters[:center]   = "#{center[0]},#{center[1]}" if center
       parameters[:zoom]     = "#{zoom}"                   if zoom
-      parameters[:markers]  = "#{markers_url_fragment}"   if markers_url_fragment
+      parameters[:markers]  = "#{grouped_markers_fragements.join('&markers=')}"   if grouped_markers_fragements
       parameters[:sensor]   = "#{sensor}"
       
       parameters = parameters.to_a.sort { |a, b| a[0].to_s <=> b[0].to_s }
@@ -114,9 +114,22 @@ module StaticGmaps
       return x
     end  
     
-    def markers_url_fragment
+    def grouped_markers_fragements
       if markers && markers.any?
-        return markers.collect{|marker| marker.url_fragment }.join('|')
+        grouped = markers.group_by {|marker| 
+          if marker.color and marker.label then
+            "color:#{marker.color}|label:#{marker.label}"
+          elsif marker.color then
+            "color:#{marker.color}"
+          elsif marker.label then
+            "label:#{marker.label}"
+          else
+            ""
+          end
+        }
+        return grouped.collect{|group, gmarkers| 
+          "#{group}|" + gmarkers.collect{|marker| marker.url_fragment }.join('|')
+        }
       else
         return nil
       end
@@ -145,13 +158,13 @@ module StaticGmaps
     attr_accessor :latitude,
                   :longitude,
                   :color,
-                  :alpha_character
+                  :label
     
     def initialize(options = {})
       self.latitude        = options[:latitude]        || StaticGmaps::default_latitude
       self.longitude       = options[:longitude]       || StaticGmaps::default_longitude
       self.color           = options[:color]           || StaticGmaps::default_color
-      self.alpha_character = options[:alpha_character] || StaticGmaps::default_alpha_character
+      self.label           = options[:label] || StaticGmaps::default_label
     end
     
     def color=(value)
@@ -164,24 +177,20 @@ module StaticGmaps
       @color = value
     end
     
-    def alpha_character=(value)
+    def label=(value)
       if value
-        value = value.to_s.downcase.to_sym
-        if !StaticGmaps::valid_alpha_characters.include?(value)
+        value = value.to_s.upcase.to_sym
+        if !StaticGmaps::valid_alpha_characters.include?(value.downcase.to_sym)
           raise ArgumentError.new("#{value} is not a supported alpha_character.  Supported colors are #{StaticGmaps::valid_alpha_characters.join(', ')}.")
         end
       end
-      @alpha_character = value
+      @label = value
     end
     
     def url_fragment
       raise MissingArgument.new("Latitude must be set before a url_fragment can be generated for Marker.") if !latitude
       raise MissingArgument.new("Longitude must be set before a url_fragment can be generated for Marker.") if !longitude
-      x  = ""
-      x += "color:#{color}|" if color
-      x += "label:#{alpha_character}|" if alpha_character
-      x += "#{latitude},#{longitude}"
-      return x
+      return "#{latitude},#{longitude}"
     end
   end
 end
