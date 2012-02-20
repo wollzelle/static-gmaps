@@ -18,7 +18,7 @@ describe StaticGmaps do
 
   describe Map, 'initialize with all attributes' do
     before(:each) do
-      @marker = StaticGmaps::Marker.new :latitude => 0, :longitude => 0, :icon     => nil
+      @marker = StaticGmaps::Marker.new :latitude => 40.714, :longitude => -73.998, :label => 'z'
       @map = StaticGmaps::Map.new :center   => [ 40.714728, -73.998672 ],
                                   :zoom     => 12,
                                   :size     => [ 500, 400 ],
@@ -27,7 +27,7 @@ describe StaticGmaps do
                                   :sensor   => true
     end
 
-    it 'should have a url'   do @map.url.should      == 'http://maps.google.com/maps/api/staticmap?center=40.714728,-73.998672&map_type=roadmap&markers=|0,0&scale=1&sensor=true&size=500x400&zoom=12' end
+    it 'should have a url'   do @map.url.should      == 'http://maps.google.com/maps/api/staticmap?center=40.714728,-73.998672&map_type=roadmap&markers=label:Z|40.714,-73.998&scale=1&sensor=true&size=500x400&zoom=12' end
     it 'should set center'   do @map.center.should   == [ 40.714728, -73.998672 ] end
     it 'should set zoom'     do @map.zoom.should     == 12 end
     it 'should set size'     do @map.size.should     == [ 500, 400 ] end
