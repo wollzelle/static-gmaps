@@ -45,10 +45,9 @@ module StaticGmaps
   @@default_label           = nil
   @@default_icon            = nil
   @@valid_colors            = [ :red, :green, :blue ]
-  @@valid_alpha_characters  = [ :a, :b, :c, :d, :e, :f, :g, :h, :i, :j, :k, :l, :m, :n, :o, :p, :q, :r, :s, :t, :u, :v, :w, :x, :y, :z ]
 
   [:version, :maximum_url_size, :maximum_markers, :default_center, :default_zoom, :default_scale, :default_size, :default_map_type,
-  :default_latitude, :default_longitude, :default_color, :default_label, :valid_colors, :valid_alpha_characters, :default_sensor].each do |sym|
+  :default_latitude, :default_longitude, :default_color, :default_label, :valid_colors, :default_icon, :default_sensor].each do |sym|
     class_eval <<-EOS
       def self.#{sym}
         @@#{sym}
@@ -189,9 +188,6 @@ module StaticGmaps
     def label=(value)
       if value
         value = value.to_s.upcase.to_sym
-        if !StaticGmaps::valid_alpha_characters.include?(value.downcase.to_sym)
-          raise ArgumentError.new("#{value} is not a supported alpha_character.  Supported colors are #{StaticGmaps::valid_alpha_characters.join(', ')}.")
-        end
       end
       @label = value
     end
