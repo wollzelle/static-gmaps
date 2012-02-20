@@ -5,8 +5,8 @@
 == DESCRIPTION:
 
 Provides an interface to the Google Static Maps API v3.
-Copyright (c) 2010 Sebastian Gräßl <sebastian@validcode.me>
-Original Version from John Wulff, modified by Daniel Mattes
+Copyright (c) 2012 wollzelle GmbH
+Original Version from John Wulff, modified by Daniel Mattes and Sebastian Gräßl
 
 == FEATURES/PROBLEMS:
 
@@ -22,14 +22,16 @@ Original Version from John Wulff, modified by Daniel Mattes
 
   map = StaticGmaps::Map.new :center   => [ 40.714728, -73.998672 ],
                              :zoom     => 5,
+                             :scale    => 2,
                              :size     => [ 500, 400 ],
                              :map_type => :roadmap,
                              :key      => GOOGLE_MAPS_API_KEY
   map.markers << StaticGmaps::Marker.new(:latitude => 40,
                                          :longitude => -73,
                                          :color => :blue,
-                                         :alpha_character => :b)
-  map.url => 'http://maps.google.com/staticmap?center=40.714728,-73.998672&key=GOOGLE_MAPS_API_KEY&map_type=roadmap&markers=40,-73,blueb&size=500x400&zoom=5'
+                                         :label => :b)
+
+  map.url => 'http://maps.google.com/staticmap?center=40.714728,-73.998672&key=GOOGLE_MAPS_API_KEY&map_type=roadmap&scale=2&markers=40,-73,blue|b&size=500x400&zoom=5'
 
 == REQUIREMENTS:
 
@@ -43,8 +45,8 @@ Original Version from John Wulff, modified by Daniel Mattes
 
 (The MIT License)
 
-Copyright (c) 2010 Sebastian Gräßl <sebastian@validcode.me>
-Original Version from John Wulff, modified by Daniel Mattes
+Copyright (c) 2012 wollzelle GmbH
+Original Version from John Wulff, modified by Daniel Mattes and Sebastian Gräßl
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
