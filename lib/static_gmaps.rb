@@ -31,6 +31,7 @@ module StaticGmaps
   @@maximum_markers  = 50
   @@default_center   = [ 0, 0 ]
   @@default_zoom     = 1
+  @@default_scale    = 1
   @@default_size     = [ 500, 400 ]
   @@default_map_type = :roadmap
   @@default_sensor   = false
@@ -46,7 +47,7 @@ module StaticGmaps
   @@valid_colors            = [ :red, :green, :blue ]
   @@valid_alpha_characters  = [ :a, :b, :c, :d, :e, :f, :g, :h, :i, :j, :k, :l, :m, :n, :o, :p, :q, :r, :s, :t, :u, :v, :w, :x, :y, :z ]
 
-  [:version, :maximum_url_size, :maximum_markers, :default_center, :default_zoom, :default_size, :default_map_type,
+  [:version, :maximum_url_size, :maximum_markers, :default_center, :default_zoom, :default_scale, :default_size, :default_map_type,
   :default_latitude, :default_longitude, :default_color, :default_label, :valid_colors, :valid_alpha_characters, :default_sensor].each do |sym|
     class_eval <<-EOS
       def self.#{sym}
@@ -64,6 +65,7 @@ module StaticGmaps
 
     attr_accessor :center,
                   :zoom,
+                  :scale,
                   :size,
                   :map_type,
                   :markers,
@@ -72,6 +74,7 @@ module StaticGmaps
     def initialize(options = {})
       self.center   = options[:center]
       self.zoom     = options[:zoom]     || StaticGmaps::default_zoom
+      self.scale    = options[:scale]    || StaticGmaps::default_zoom
       self.size     = options[:size]     || StaticGmaps::default_size
       self.map_type = options[:map_type] || StaticGmaps::default_map_type
       self.sensor   = options[:sensor]   || StaticGmaps::default_sensor
@@ -104,6 +107,7 @@ module StaticGmaps
       parameters[:map_type] = "#{map_type}"               if map_type
       parameters[:center]   = "#{center[0]},#{center[1]}" if center
       parameters[:zoom]     = "#{zoom}"                   if zoom
+      parameters[:scale]    = "#{scale}"                  if scale
       parameters[:markers]  = "#{grouped_markers_fragements.join('&markers=')}"   if grouped_markers_fragements
       parameters[:sensor]   = "#{sensor}"
 
