@@ -24,7 +24,7 @@
 require 'net/http'
 
 module StaticGmaps
-  @@version = '0.0.5'
+  @@version = '0.0.6'
 
   #map
   @@maximum_url_size = 1978
@@ -35,8 +35,6 @@ module StaticGmaps
   @@default_size     = [ 500, 400 ]
   @@default_map_type = :roadmap
   @@default_sensor   = false
-
-
 
   #marker
   @@default_latitude        = nil
@@ -68,7 +66,8 @@ module StaticGmaps
                   :size,
                   :map_type,
                   :markers,
-                  :sensor
+                  :sensor,
+                  :api_key
 
     def initialize(options = {})
       self.center   = options[:center]
@@ -78,6 +77,7 @@ module StaticGmaps
       self.map_type = options[:map_type] || StaticGmaps::default_map_type
       self.sensor   = options[:sensor]   || StaticGmaps::default_sensor
       self.markers  = options[:markers]  || [ ]
+      self.api_key  = options[:api_key]
     end
 
     def width
@@ -104,6 +104,7 @@ module StaticGmaps
       parameters = {}
       parameters[:size]     = "#{size[0]}x#{size[1]}"
       parameters[:map_type] = "#{map_type}"               if map_type
+      parameters[:key]      = "#{api_key}"                if api_key
       parameters[:center]   = "#{center[0]},#{center[1]}" if center
       parameters[:zoom]     = "#{zoom}"                   if zoom
       parameters[:scale]    = "#{scale}"                  if scale
@@ -165,7 +166,8 @@ module StaticGmaps
                   :longitude,
                   :color,
                   :label,
-                  :icon
+                  :icon,
+                  :api_key
 
     def initialize(options = {})
       self.latitude        = options[:latitude]        || StaticGmaps::default_latitude
@@ -173,6 +175,7 @@ module StaticGmaps
       self.color           = options[:color]           || StaticGmaps::default_color
       self.label           = options[:label]           || StaticGmaps::default_label
       self.icon            = options[:icon]            || StaticGmaps::default_icon
+      self.api_key         = options[:api_key]
     end
 
     def color=(value)
